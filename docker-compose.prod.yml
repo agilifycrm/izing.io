@@ -1,5 +1,9 @@
 version: '3'
 
+networks:
+  agilifycrm:
+    external: true
+
 services:
   
 
@@ -13,6 +17,8 @@ services:
       - ./backend/.env
     volumes:
       - '$HOME/www/izing/database/redis:/data'
+    networks:
+      - agilifycrm
     
   izing-rabbitmq:
     container_name: "rabbitmq"
@@ -33,6 +39,8 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+    networks:
+      - agilifycrm
    
   izing-backend:
     container_name: "izing-backend"
@@ -56,6 +64,8 @@ services:
     depends_on:
       - izing-redis
       - izing-rabbitmq
+    networks:
+      - agilifycrm
   
   izing-frontend:
     container_name: izing-frontend
@@ -74,5 +84,7 @@ services:
       - $HOME/www/izing/media:/opt/services/app/media
     depends_on:
       - izing-backend
+    networks:
+      - agilifycrm
    
 
