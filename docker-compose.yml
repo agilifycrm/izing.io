@@ -87,8 +87,8 @@ services:
       - izing-db
       - izing-rabbitmq
   
-  nginx:
-    container_name: nginx-proxy
+  izing-frontend:
+    container_name: izing-frontend
     build:
       context: .
       # args:
