@@ -2,27 +2,6 @@ version: '3'
 
 services:
   
-  fixPermissionsPostregres:
-    image: 'postgres:14'
-    user: root
-    command: chown -R 1001:1001 /var/lib/postgresql
-    volumes:
-      - '$HOME/www/izing/database/pg:/var/lib/postgresql'
-  
-  izing-db:
-    image: 'postgres:14'
-    restart: always
-    container_name: "izing-db"
-    env_file:
-      - ./backend/.env
-    volumes:
-      - "$HOME/www/izing/database/pg:/var/lib/postgresql"
-    ports:
-      - "5432:5432"
-    networks:
-      - izing
-    depends_on:
-      - fixPermissionsPostregres
 
   izing-redis:
     container_name: "izing-redis"
@@ -34,9 +13,7 @@ services:
       - ./backend/.env
     volumes:
       - '$HOME/www/izing/database/redis:/data'
-    networks:
-      - izing
-  
+    
   izing-rabbitmq:
     image: rabbitmq:3-management
     container_name: "izing-rabbitmq"
@@ -56,8 +33,7 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-    networks:
-      - izing
+   
 
   izing-backend:
     container_name: "izing-backend"
@@ -77,11 +53,9 @@ services:
     volumes:
       - "./backend:/usr/src/app"
       - $HOME/www/izing/media:/usr/src/app/public
-    networks:
-      - izing
+  
     depends_on:
       - izing-redis
-      - izing-db
       - izing-rabbitmq
   
   izing-frontend:
@@ -99,12 +73,5 @@ services:
       - $HOME/www/izing/media:/opt/services/app/media
     depends_on:
       - izing-backend
-    networks:
-      - izing
-
-
-
-networks:
-  izing:
-    driver: bridge
+   
 
