@@ -53,6 +53,7 @@ services:
     tty: true
     ports:
       - 3001:3001
+      
     # command: /start_production
     extra_hosts:
       - "host.docker.internal:host-gateway"
