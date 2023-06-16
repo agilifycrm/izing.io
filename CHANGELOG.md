@@ -1,3 +1,48 @@
+# [1.9.0](https://github.com/ldurans/izing.io/compare/v1.8.1...v1.9.0) (2022-12-19)
+
+
+### Bug Fixes
+
+* ajuste no funcionamento do fluxo chatbot para todos os canais como esperando ([ef36938](https://github.com/ldurans/izing.io/commit/ef369382166312504abcba764c1e5918c03c358d))
+* Ajuste no tratamento do horário de atendimento > Necessário que o usuário para a sincronização do timezone no servidor e banco de dados, atualmente isso não é suportado pela aplicação. ([f5500d4](https://github.com/ldurans/izing.io/commit/f5500d4bdb5bfa070b9bcd787990c28b4c4fe118)), closes [#87](https://github.com/ldurans/izing.io/issues/87)
+* text in readme segundarias to secundarias ([683792b](https://github.com/ldurans/izing.io/commit/683792b133495de37277e9f7332dc06e4462dd3b))
+* tratado erro ao pegar o token de acesso definitivo do messenger. ([9941e23](https://github.com/ldurans/izing.io/commit/9941e23fe40467590c4e22e2d7600c027f3861a0))
+
+
+### Features
+
+* Adicionado suporte para utilização do redis com autenticação ([9e04814](https://github.com/ldurans/izing.io/commit/9e0481491ef5fd6551b158586f6f26bd2422e80b))
+* lógica de desconexão, com tentativa de restauração ([ef74480](https://github.com/ldurans/izing.io/commit/ef74480e44abbd629e8ea62c15b533bc5375ca52))
+
+## [1.8.1](https://github.com/ldurans/izing.io/compare/v1.8.0...v1.8.1) (2022-12-13)
+
+
+### Bug Fixes
+
+* salvar o estado da opção ativação/inativação assinatura. ([d0c8f23](https://github.com/ldurans/izing.io/commit/d0c8f239572dc7d0231211a2296a40baf15db04f))
+
+# [1.8.0](https://github.com/ldurans/izing.io/compare/v1.7.3...v1.8.0) (2022-12-05)
+
+
+### Features
+
+* ativar/desativar assinatura ([fd637e8](https://github.com/ldurans/izing.io/commit/fd637e86331bf9d774f08fb6f71658be06312f09)), closes [#72](https://github.com/ldurans/izing.io/issues/72)
+
+## [1.7.3](https://github.com/ldurans/izing.io/compare/v1.7.2...v1.7.3) (2022-12-01)
+
+
+### Bug Fixes
+
+* ajuste para assegurar o envio conforme sessão do ticket, corrigindo conflito do contato. ([28d28d1](https://github.com/ldurans/izing.io/commit/28d28d11906d3a6aa4c19533f6b4f8ec45cadb89))
+
+## [1.7.2](https://github.com/ldurans/izing.io/compare/v1.7.1...v1.7.2) (2022-11-28)
+
+
+### Bug Fixes
+
+* ajuste scroll para mensagens recebidas ([3c83796](https://github.com/ldurans/izing.io/commit/3c837964dd6de77f9d1de0c2d6ad0e72e2d09ebd)), closes [#47](https://github.com/ldurans/izing.io/issues/47)
+* correção do versionamento do package-lock.json. ([99c9504](https://github.com/ldurans/izing.io/commit/99c9504c52c7de14958628b4b9ad9b660676f647))
+
 ## [1.7.1](https://github.com/ldurans/izing.io/compare/v1.7.0...v1.7.1) (2022-11-14)
 
 

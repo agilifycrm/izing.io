@@ -8,10 +8,11 @@ import Ticket from "../../models/Ticket";
 import { logger } from "../../utils/logger";
 import { sleepRandomTime } from "../../utils/sleepRandomTime";
 import Contact from "../../models/Contact";
+import { generateMessage } from "../../utils/mustache";
 // import SetTicketMessagesAsRead from "../../helpers/SetTicketMessagesAsRead";
 
 interface Session extends Client {
-  id?: number;
+  id: number;
 }
 
 const SendMessagesSystemWbot = async (
@@ -52,7 +53,8 @@ const SendMessagesSystemWbot = async (
         where: {
           tenantId,
           status: { [Op.ne]: "closed" },
-          channel: "whatsapp"
+          channel: "whatsapp",
+          whatsappId: wbot.id
         },
         include: ["contact"]
       },
@@ -93,10 +95,14 @@ const SendMessagesSystemWbot = async (
         });
         logger.info("sendMessage media");
       } else {
-        sendedMessage = await wbot.sendMessage(chatId, message.body, {
-          quotedMessageId: quotedMsgSerializedId,
-          linkPreview: false // fix: send a message takes 2 seconds when there's a link on message body
-        });
+        sendedMessage = await wbot.sendMessage(
+          chatId,
+          generateMessage(message.body, ticket),
+          {
+            quotedMessageId: quotedMsgSerializedId,
+            linkPreview: false // fix: send a message takes 2 seconds when there's a link on message body
+          }
+        );
         logger.info("sendMessage text");
       }
 

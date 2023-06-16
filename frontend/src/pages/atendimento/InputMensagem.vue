@@ -97,6 +97,19 @@
             @select="onInsertSelectEmoji" />
         </q-menu>
       </q-btn>
+      <q-checkbox keep-color
+        v-model="sign"
+        size="xl"
+        dense
+        class="q-mx-sm q-ml-md"
+        :color="sign ? 'positive' : 'black'"
+        @input="handleSign"
+        checked-icon="mdi-draw"
+        unchecked-icon="mdi-draw">
+        <q-tooltip>
+          {{ sign ? 'Desativar' : 'Ativar' }} Assinatura
+        </q-tooltip>
+      </q-checkbox>
       <q-input hide-bottom-space
         :loading="loading"
         :disable="cDisableActions"
@@ -282,7 +295,7 @@
 </template>
 
 <script>
-import { uid } from 'quasar'
+import { LocalStorage, uid } from 'quasar'
 import mixinCommon from './mixinCommon'
 import { EnviarMensagemTexto } from 'src/service/tickets'
 import { VEmojiPicker } from 'v-emoji-picker'
@@ -325,6 +338,7 @@ export default {
       visualizarMensagensRapidas: false,
       arquivos: [],
       textChat: '',
+      sign: true,
       scheduleDate: null
     }
   },
@@ -490,8 +504,8 @@ export default {
       }
       let mensagem = this.textChat.trim()
       const username = localStorage.getItem('username')
-      if (username) {
-        mensagem = `*#${username}*:\n ${mensagem}`
+      if (username && this.sign) {
+        mensagem = `*${username}*:\n ${mensagem}`
       }
       const message = {
         read: 1,
@@ -571,12 +585,19 @@ export default {
           color: 'white'
         }]
       })
+    },
+    handleSign (state) {
+      this.sign = state
+      LocalStorage.set('sign', this.sign)
     }
   },
   mounted () {
     this.$root.$on('mensagem-chat:focar-input-mensagem', () => this.$refs.inputEnvioMensagem.focus())
     const self = this
     window.addEventListener('paste', self.handleInputPaste)
+    if (![null, undefined].includes(LocalStorage.getItem('sign'))) {
+      this.handleSign(LocalStorage.getItem('sign'))
+    }
   },
   beforeDestroy () {
     const self = this

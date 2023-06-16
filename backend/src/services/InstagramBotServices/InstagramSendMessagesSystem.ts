@@ -17,11 +17,12 @@ import Message from "../../models/Message";
 import Ticket from "../../models/Ticket";
 import { logger } from "../../utils/logger";
 import { sleepRandomTime } from "../../utils/sleepRandomTime";
+import { generateMessage } from "../../utils/mustache";
 // import { sleepRandomTime } from "../../utils/sleepRandomTime";
 // import SetTicketMessagesAsRead from "../../helpers/SetTicketMessagesAsRead";
 
 interface Session extends IgApiClientMQTT {
-  id?: number;
+  id: number;
   accountLogin?:
   | AccountRepositoryLoginResponseLogged_in_user
   | AccountRepositoryCurrentUserResponseUser;
@@ -54,7 +55,7 @@ const SendMessagesSystemWbot = async (
       {
         model: Ticket,
         as: "ticket",
-        where: { tenantId, channel: "instagram" },
+        where: { tenantId, channel: "instagram", whatsappId: instaBot.id },
         include: ["contact"]
       },
       {
@@ -116,7 +117,7 @@ const SendMessagesSystemWbot = async (
         logger.info("sendMessage media");
       }
       if (["chat", "text"].includes(message.mediaType) && !message.mediaName) {
-        sendedMessage = await threadEntity.broadcastText(message.body);
+        sendedMessage = await threadEntity.broadcastText(generateMessage(message.body, message.ticket));
         logger.info("sendMessage text");
       }
 

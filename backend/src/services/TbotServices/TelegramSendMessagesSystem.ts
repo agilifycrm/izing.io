@@ -8,11 +8,12 @@ import socketEmit from "../../helpers/socketEmit";
 import Message from "../../models/Message";
 import Ticket from "../../models/Ticket";
 import { logger } from "../../utils/logger";
+import { generateMessage } from "../../utils/mustache";
 // import { sleepRandomTime } from "../../utils/sleepRandomTime";
 // import SetTicketMessagesAsRead from "../../helpers/SetTicketMessagesAsRead";
 
 interface Session extends Telegraf {
-  id?: number;
+  id: number;
 }
 
 const SendMessagesSystemWbot = async (
@@ -41,7 +42,7 @@ const SendMessagesSystemWbot = async (
       {
         model: Ticket,
         as: "ticket",
-        where: { tenantId, channel: "telegram" },
+        where: { tenantId, channel: "telegram", whatsappId: tbot.id },
         include: ["contact"]
       },
       {
@@ -110,7 +111,7 @@ const SendMessagesSystemWbot = async (
       } else {
         sendedMessage = await tbot.telegram.sendMessage(
           chatId,
-          message.body,
+          generateMessage(message.body, ticket),
           extraInfo
         );
         logger.info("sendMessage text");

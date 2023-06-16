@@ -1,22 +1,8 @@
-const token = JSON.parse(localStorage.getItem('token'))
 const usuario = JSON.parse(localStorage.getItem('usuario'))
-// const queues = JSON.parse(localStorage.getItem('queues'))
 import Router from 'src/router/index'
-// import verifySocketTicketAction from 'src/utils/verifySocketTicketAction'
+import { socketIO } from '../utils/socket'
 
-// const isQueueOrUserNotify = (ticket) => {
-//   const queue = queues.findIndex(q => q.id === ticket.queueId)
-//   return (queue || usuario.id === ticket.userId)
-// }
-
-import openSocket from 'socket.io-client'
-const socket = openSocket(process.env.URL_API, {
-  query: {
-    token
-  },
-  forceNew: true
-})
-// const userId = +localStorage.getItem('userId')
+const socket = socketIO()
 
 socket.on(`tokenInvalid:${socket.id}`, () => {
   socket.disconnect()
@@ -56,7 +42,7 @@ export default {
       //   }
       // })
 
-      socket.on(`${usuario.tenantId}:whatsapp`, data => {
+      socket.io.on(`${usuario.tenantId}:whatsapp`, data => {
         if (data.action === 'update') {
           this.$store.commit('UPDATE_WHATSAPPS', data.whatsapp)
         }
@@ -78,11 +64,7 @@ export default {
           this.$q.notify({
             position: 'top',
             icon: 'mdi-wifi-arrow-up-down',
-            message: `
-        < p >
-        Conexão com o whatsapp está pronta.Agora já é possível enviar e receber mensagens!!
-        < p > Nome Conexão: <span class="q-ml-sm "> ${data.session.name} </span>  <span class="q-mx-sm"> || </span> Número: <span class="q-ml-sm"> ${data.session.number} </span> </p >
-        <p>`,
+            message: `A conexão com o WhatsApp está pronta e o mesmo está habilitado para enviar e receber mensagens. Conexão: ${data.session.name}. Número: ${data.session.number}.`,
             type: 'positive',
             color: 'primary',
             html: true,

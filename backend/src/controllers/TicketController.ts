@@ -3,7 +3,9 @@ import { Op } from "sequelize";
 // import GetWbotMessage from "../helpers/GetWbotMessage";
 import { getIO } from "../libs/socket";
 import Message from "../models/Message";
+import Whatsapp from "../models/Whatsapp";
 import CreateLogTicketService from "../services/TicketServices/CreateLogTicketService";
+import { generateMessage } from "../utils/mustache";
 
 import CreateTicketService from "../services/TicketServices/CreateTicketService";
 import DeleteTicketService from "../services/TicketServices/DeleteTicketService";
@@ -11,6 +13,7 @@ import ListTicketsService from "../services/TicketServices/ListTicketsService";
 import ShowLogTicketService from "../services/TicketServices/ShowLogTicketService";
 import ShowTicketService from "../services/TicketServices/ShowTicketService";
 import UpdateTicketService from "../services/TicketServices/UpdateTicketService";
+import SendWhatsAppMessage from "../services/WbotServices/SendWhatsAppMessage";
 
 type IndexQuery = {
   searchParam: string;
@@ -82,7 +85,7 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
   // se ticket criado pelo próprio usuário, não emitir socket.
   if (!userId) {
     const io = getIO();
-    io.to(`${tenantId}-${ticket.status}`).emit(`${tenantId}-ticket`, {
+    io.to(`${tenantId}:${ticket.status}`).emit(`${tenantId}:ticket`, {
       action: "create",
       ticket
     });
@@ -153,23 +156,16 @@ export const update = async (
     isTransference,
     userIdRequest
   });
-
-  // const io = getIO();
-
-  // if (ticket.status !== oldStatus || ticket.user?.id !== oldUserId) {
-  //   io.to(`${tenantId}-${oldStatus}`).emit(`${tenantId}-ticket`, {
-  //     action: "delete",
-  //     ticketId: ticket.id
-  //   });
-  // }
-
-  // io.to(`${tenantId}-${ticket.status}`)
-  //   .to(`${tenantId}-notification`)
-  //   .to(`${tenantId}-${ticketId}`)
-  //   .emit(`${tenantId}-ticket`, {
-  //     action: "updateStatus",
-  //     ticket
-  //   });
+  
+  //enviar mensagem de despedida ao encerrar atendimento
+  if (ticket.status === "closed") {
+	const whatsapp = await Whatsapp.findOne({
+		where: { id: ticket.whatsappId, tenantId }
+	});	
+	if(whatsapp?.farewellMessage){
+        await SendWhatsAppMessage({body: generateMessage(`${whatsapp?.farewellMessage}`, ticket), ticket});    
+    }
+  };
 
   return res.status(200).json(ticket);
 };
@@ -185,10 +181,10 @@ export const remove = async (
   const ticket = await DeleteTicketService({ id: ticketId, tenantId, userId });
 
   const io = getIO();
-  io.to(`${tenantId}-${ticket.status}`)
-    .to(`${tenantId}-${ticketId}`)
-    .to(`${tenantId}-notification`)
-    .emit(`${tenantId}-ticket`, {
+  io.to(`${tenantId}:${ticket.status}`)
+    .to(`${tenantId}:${ticketId}`)
+    .to(`${tenantId}:notification`)
+    .emit(`${tenantId}:ticket`, {
       action: "delete",
       ticketId: +ticketId
     });
