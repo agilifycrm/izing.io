@@ -4,7 +4,7 @@ services:
   
 
   izing-redis:
-    container_name: "izing-redis"
+    container_name: "redis"
     image: 'redis:latest'
     restart: always
     ports:
@@ -15,8 +15,8 @@ services:
       - '$HOME/www/izing/database/redis:/data'
     
   izing-rabbitmq:
+    container_name: "rabbitmq"
     image: rabbitmq:3-management
-    container_name: "izing-rabbitmq"
     restart: always
     env_file:
       - ./backend/.env
@@ -34,7 +34,6 @@ services:
       - 5672:5672
       - 15672:15672
    
-
   izing-backend:
     container_name: "izing-backend"
     build:
