@@ -59,7 +59,9 @@ services:
       - izing-rabbitmq
   
   izing-frontend:
-    image: jeduoliveira/izing-frontend
+    container_name: izing-frontend
+    build:
+      context: .
       # args:
       #   - DOMINIO_CLIENTE=${DOMINIO_CLIENTE}
     restart: always
