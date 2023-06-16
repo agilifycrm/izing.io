@@ -20,7 +20,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - db_network
+      - izing
     depends_on:
       - fixPermissionsPostregres
 
@@ -35,7 +35,7 @@ services:
     volumes:
       - '$HOME/www/izing/database/redis:/data'
     networks:
-      - redis_network
+      - izing
   
   izing-rabbitmq:
     image: rabbitmq:3-management
@@ -57,7 +57,7 @@ services:
       - 5672:5672
       - 15672:15672
     networks:
-      - rabbitmq_network
+      - izing
 
   izing-backend:
     container_name: "izing-backend"
@@ -78,10 +78,7 @@ services:
       - "./backend:/usr/src/app"
       - $HOME/www/izing/media:/usr/src/app/public
     networks:
-      - rabbitmq_network
-      - redis_network
-      - db_network
-      - nginx_network
+      - izing
     depends_on:
       - izing-redis
       - izing-db
@@ -105,16 +102,11 @@ services:
     depends_on:
       - izing-backend
     networks:
-      - nginx_network
+      - izing
 
 
 
 networks:
-  db_network:
+  izing:
     driver: bridge
-  redis_network:
-    driver: bridge
-  rabbitmq_network:
-    driver: bridge
-  nginx_network:
-    driver: bridge
+
