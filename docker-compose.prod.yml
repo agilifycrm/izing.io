@@ -52,7 +52,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - 8088:8088
+      - 3001:3001
     # command: /start_production
     extra_hosts:
       - "host.docker.internal:host-gateway"
