@@ -86,6 +86,7 @@ services:
       - $HOME/www/izing/media:/opt/services/app/media
     depends_on:
       - izing-backend
+    
     networks:
       - agilifycrm
     environment:
