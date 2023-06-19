@@ -6,13 +6,10 @@ networks:
 
 services:
   
-
   izing-redis:
     container_name: "redis"
     image: 'redis:latest'
     restart: always
-    ports:
-      - "6379:6379"
     env_file:
       - ./backend/.env
     volumes:
@@ -21,6 +18,7 @@ services:
       - agilifycrm
     environment:
       - TZ=America/Sao_Paulo
+    
     
   izing-rabbitmq:
     container_name: "rabbitmq"
